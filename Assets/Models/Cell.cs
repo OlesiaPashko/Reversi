@@ -1,23 +1,27 @@
-﻿
-using System;
+﻿using System;
 
+public enum CellState
+{
+    Black,
+    White,
+    Empty
+}
 public class Cell
 {
-    public bool isBlack;
-    private int x;
-    private int y;
+    public CellState State;
     public event Action CellChangedColor;
     public void ChangeColor()
     {
-        isBlack = !isBlack;
+        if (State == CellState.Black)
+            State = CellState.White;
+        else
+            State = CellState.Black;
         CellChangedColor?.Invoke();
     }
 
-    public Cell(int x, int y, bool isBlack)
+    public Cell(CellState state)
     {
-        this.x = x;
-        this.y = y;
-        this.isBlack = isBlack;
+        this.State = state;
     }
 
 }
