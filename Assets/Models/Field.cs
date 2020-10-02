@@ -4,19 +4,20 @@ using UnityEngine.UIElements;
 
 public class Field 
 {
-    public List<List<Cell>> Cells { get; private set; } = new List<List<Cell>>();
-    public Field(Action CellChangedColor)
+    public List<List<Cell>> Cells { get; private set; }
+
+    public Field()
     {
         int size = 8;
-        for(int i = 0; i < size; i++)
+        Cells = new List<List<Cell>>(size);
+        for (int i = 0; i < size; i++)
         {
-            for(int j = 0; j < size; j++)
+            Cells.Add(new List<Cell>(size));
+            for (int j = 0; j < size; j++)
             {
-                Cells[i][j] = new Cell(CellState.Empty);
-                Cells[i][j].CellChangedColor += CellChangedColor;
+                Cells[i].Add(new Cell(CellState.Empty));
             }
         }
-
         SetInitialFieldState();
     }
 
@@ -167,7 +168,7 @@ public class Field
         }
     }
 
-    private CellState GetOppositeColor(CellState color)
+    public CellState GetOppositeColor(CellState color)
     {
         if(color == CellState.Black)
         {
@@ -198,6 +199,33 @@ public class Field
         return availableCells;
     }
 
+    public int CountCells(CellState playerColor)
+    {
+        int count = 0;
+        foreach(var row in Cells)
+        {
+            foreach(var cell in row)
+            {
+                if (cell.State == playerColor)
+                    count++;
+            }
+        }
+        return count;
+    }
+
+    public bool isFull()
+    {
+        foreach (var row in Cells)
+        {
+            foreach (var cell in row)
+            {
+                if (cell.State == CellState.Empty)
+                    return true;
+            }
+        }
+        return false;
+    }
+
     private bool IsCellAvailable(CellState playerColor, int rowIndex, int columnIndex)
     {
         return IsAvailableGoingUp(playerColor, rowIndex, columnIndex) 
@@ -213,6 +241,8 @@ public class Field
     private bool IsAvailableGoingUp(CellState playerColor, int rowIndex, int columnIndex)
     {
         rowIndex--;
+
+
         while(rowIndex > 0 && Cells[rowIndex][columnIndex].State != CellState.Empty
             &&Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
         {

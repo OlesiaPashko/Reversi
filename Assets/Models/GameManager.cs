@@ -1,48 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Models
 {
     public class GameManager
     {
-        Player firstPlayer = new HumanPlayer();
-        Player secondPlayer;
+        private Player firstPlayer = new HumanPlayer();
+        private Player secondPlayer;
+        private Player currentPlayer;
         Field field;
+        public event Action<List<List<Cell>>> MoveMade;
 
-        public GameManager(Action cellChangedColor)
+        public event Action<List<List<Cell>>> GameStarted;
+
+        public event Action<List<Tuple<int, int>>> AvailableCellsCalculated;
+
+        public event Action<GameFinishState> GameFinished;
+        public GameManager()
         {
-            field = new Field(cellChangedColor);
+            field = new Field();
         }
 
-        public List<Tuple<int, int>> GetAvailableCells(Player player)
+        public List<Tuple<int, int>> GetAvailableCells()
         {
-            return field.GetAvailableCells(player.Color);
+            var availableCells = field.GetAvailableCells(currentPlayer.Color);
+            AvailableCellsCalculated?.Invoke(availableCells);
+            return availableCells;
         }
 
-        public void SetCell(Player player, Tuple<int, int> coolds)
+        public void MakeMove(Tuple<int, int> coolds)
         {
-            field.SetCell(player.Color, coolds);
-        }
-        public void ResetGame()
-        {
+            field.SetCell(currentPlayer.Color, coolds);
+            MoveMade?.Invoke(field.Cells);
 
+            SwitchPlayer();
+            if (field.isFull())
+                FinishGame();
+
+            GetAvailableCells();
+        }
+        public void ResetGame(bool isWithAI, CellState firstPlayerColor)
+        {
+            field = new Field();
+            StartGame(isWithAI, firstPlayerColor);
         }
 
-        public void StartGame(bool withAI)
+        public void StartGame(bool isWithAI, CellState firstPlayerColor)
         {
-            if (withAI)
+            firstPlayer.Color = firstPlayerColor;
+            currentPlayer = firstPlayer;
+
+            if (isWithAI)
             {
                 secondPlayer = new AIPlayer();
+                secondPlayer.Color = field.GetOppositeColor(firstPlayerColor);
             }
+
+            GameStarted?.Invoke(field.Cells);
+
+            //GetAvailableCells();
         }
 
         public void FinishGame()
         {
+            int firstPlayerCellsCount = field.CountCells(firstPlayer.Color);
+            int secountPlayerCellsCount = field.CountCells(secondPlayer.Color);
+            if (firstPlayerCellsCount > secountPlayerCellsCount)
+                GameFinished?.Invoke(GameFinishState.FirstPlayerWon);
+            else if (secountPlayerCellsCount > firstPlayerCellsCount)
+                GameFinished?.Invoke(GameFinishState.SecondPlayerWon);
+            else
+                GameFinished?.Invoke(GameFinishState.Tie);
+        }
 
+        private void SwitchPlayer()
+        {
+            currentPlayer = currentPlayer == firstPlayer ? secondPlayer : firstPlayer;
         }
     }
 }

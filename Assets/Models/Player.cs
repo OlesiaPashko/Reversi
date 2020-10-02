@@ -16,6 +16,5 @@ namespace Assets.Models
 
     class AIPlayer : Player
     {
-
     }
 }

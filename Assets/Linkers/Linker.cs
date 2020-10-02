@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using Assets.Models;
+using UnityEngine.SceneManagement;
 
 public class Linker : MonoBehaviour
 {
@@ -6,9 +8,11 @@ public class Linker : MonoBehaviour
     public void Start()
     {
         CellsDrawer view = GetComponent<CellsDrawer>();
-        Field gameField = new Field(view.ChangeColor);
         CellsController cellsController = GetComponent<CellsController>();
-        cellsController.SetField(gameField);
+        GameManager gameManager = new GameManager();
+        cellsController.GameManager = gameManager;
+        view.ListenTo(gameManager);
+        cellsController.StartGame();
     }
 
     // Update is called once per frame

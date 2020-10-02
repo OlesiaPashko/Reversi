@@ -1,16 +1,33 @@
-﻿
+﻿using Assets.Models;
+using UnityEditor.PackageManager;
 using UnityEngine;
-using UnityEngine.XR.WSA.Input;
 
 public class CellsController : MonoBehaviour
 {
-    private Field field;
-    public void SetField(Field field)
+    public static CellState firstPlayerColor;
+
+    public static bool IsTwoPlayers;
+
+    public GameObject FirstPlayerCellExample;
+
+    public GameObject SecondPlayerCellExample;
+    public GameManager GameManager { get; set; }
+    public void StartGame()
     {
-        this.field = field;
+        SetPlayersColors();
+        GameManager.StartGame(IsTwoPlayers, firstPlayerColor);
     }
-    public void ChangeColor()
+    private void SetPlayersColors()
     {
-        field.ChangeColorOfAllCells();
+        if(firstPlayerColor == CellState.Black)
+        {
+            FirstPlayerCellExample.GetComponent<SpriteRenderer>().material.color = Color.black;
+            SecondPlayerCellExample.GetComponent<SpriteRenderer>().material.color = Color.white;
+        }
+        else
+        {
+            FirstPlayerCellExample.GetComponent<SpriteRenderer>().material.color = Color.white;
+            SecondPlayerCellExample.GetComponent<SpriteRenderer>().material.color = Color.black;
+        }
     }
 }
