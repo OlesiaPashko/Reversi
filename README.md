@@ -1,7 +1,16 @@
 # Reversi
 
+This is game [Reversi](https://en.wikipedia.org/wiki/Reversi) 
+It is written with Unity UI.
+
 Architecture - MVC.
 
-It implemented by 3 folders inside folder Assets and 3 .dll-s. Also there is a Linkers, that initialises objects and dependencies.
+Architecture is implemented by 3 folders inside folder Assets and 3 .dll-s. Also there is a Linker, that initializes objects and dependencies.
+You can play with friend using 1 computer or play with simple AI.
 
-As UI now there is only 1 button and 1 cell and all code is only a draft.
+There is 3 scenes:
+1. Start scene
+
+2. Main scene
+
+3. Finish Scene
