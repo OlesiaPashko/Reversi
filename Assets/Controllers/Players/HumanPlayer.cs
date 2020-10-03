@@ -1,18 +1,10 @@
-﻿using Assets.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public abstract class Player:MonoBehaviour
-{
-    public CellState Color { get; set; }
-
-    public GameManager GameManager;
-
-    public Player(CellState color)
-    {
-        Color = color;
-    }
-    public abstract bool MakeMove();
-}
 class HumanPlayer : Player
 {
     public HumanPlayer(CellState color) : base(color) { }
@@ -22,7 +14,7 @@ class HumanPlayer : Player
         {
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-             return ClickIfCellIsAvailable(worldPoint);
+            return ClickIfCellIsAvailable(worldPoint);
         }
         return false;
     }
@@ -33,8 +25,6 @@ class HumanPlayer : Player
         float topLeftY = 5.65f;
         int x = Mathf.RoundToInt(((point.x - topLeftX) / 1.25f) - 1);
         int y = Mathf.RoundToInt(((topLeftY - point.y) / 1.25f) - 1);
-        Debug.Log("x = " + x);
-        Debug.Log("y = " + y);
         var cells = GameManager.GetAvailableCells();
         foreach (var cell in cells)
         {
@@ -48,16 +38,4 @@ class HumanPlayer : Player
         return false;
     }
 
-    
-}
-class AIPlayer : Player
-{
-    public AIPlayer(CellState color) : base(color) { }
-    public override bool MakeMove()
-    {
-        var cells = GameManager.GetAvailableCells();
-        var randomIndex = (int)Random.Range(0, cells.Count);
-        GameManager.MakeMove(cells[randomIndex]);
-        return true;
-    }
 }
