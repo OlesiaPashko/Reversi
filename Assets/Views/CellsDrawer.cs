@@ -8,9 +8,9 @@ using UnityEngine.UI;
 
 public class CellsDrawer : MonoBehaviour
 {
-    public Sprite CellSprite;
+    public GameObject Cell;
 
-    public Sprite AvailableCellSprite;
+    public GameObject AvailableCell;
 
     private List<List<GameObject>> matrix;
     public GameManager GameManager { get; set; }
@@ -18,7 +18,11 @@ public class CellsDrawer : MonoBehaviour
     private Color emptyCellColor;
 
     private Color availableCellColor;
-
+    public void Start()
+    {
+        ColorUtility.TryParseHtmlString("#FD46E4", out availableCellColor);
+        ColorUtility.TryParseHtmlString("#CC5F5F", out emptyCellColor);
+    }
     public void ListenTo(GameManager gameManager)
     {
         GameManager = gameManager;
@@ -37,8 +41,6 @@ public class CellsDrawer : MonoBehaviour
 
     public void DisplayAvailableCells(List<Tuple<int, int>> coords)
     {
-        if(availableCellColor == new Color(0, 0, 0, 0))
-            ColorUtility.TryParseHtmlString("#FD46E4", out availableCellColor);
         foreach (var coord in coords)
         {
             matrix[coord.Item1][coord.Item2].GetComponent<SpriteRenderer>().material.color = availableCellColor;
@@ -53,20 +55,12 @@ public class CellsDrawer : MonoBehaviour
             matrix.Add(new List<GameObject>());
             for(int j = 0;j<cells.Count; j++)
             {
-                GameObject element = new GameObject("Cell {" + i + ", " + j + "}");
-
                 float topLeftX = -5.75f;
                 float topLeftY = 5.65f;
                 float yPos = topLeftY - 1.25f * (i + 1);
                 float xPos = topLeftX + 1.25f * (j + 1);
-                element.transform.position = new Vector2(xPos, yPos);
 
-                SpriteRenderer spriteRenderer = element.AddComponent<SpriteRenderer>();
-                spriteRenderer.sprite = CellSprite;
-                Color color;
-                ColorUtility.TryParseHtmlString("#CC5F5F", out color);
-                emptyCellColor = color;
-                spriteRenderer.material.color = color;
+                GameObject element = Instantiate(Cell, new Vector2(xPos, yPos), transform.rotation);
 
                 matrix[i].Add(element);
             }

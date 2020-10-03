@@ -23,7 +23,9 @@ namespace Assets.Models
 
         public List<Tuple<int, int>> GetAvailableCells()
         {
+            Console.WriteLine(field);
             var availableCells = field.GetAvailableCells(currentPlayer.Color);
+            Console.WriteLine(AvailableCellsCalculated);
             AvailableCellsCalculated?.Invoke(availableCells);
             return availableCells;
         }
@@ -53,8 +55,12 @@ namespace Assets.Models
             if (isWithAI)
             {
                 secondPlayer = new AIPlayer();
-                secondPlayer.Color = field.GetOppositeColor(firstPlayerColor);
             }
+            else
+            {
+                secondPlayer = new HumanPlayer();
+            }
+            secondPlayer.Color = field.GetOppositeColor(firstPlayerColor);
 
             GameStarted?.Invoke(field.Cells);
 

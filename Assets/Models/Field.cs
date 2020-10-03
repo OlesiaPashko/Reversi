@@ -220,10 +220,10 @@ public class Field
             foreach (var cell in row)
             {
                 if (cell.State == CellState.Empty)
-                    return true;
+                    return false;
             }
         }
-        return false;
+        return true;
     }
 
     private bool IsCellAvailable(CellState playerColor, int rowIndex, int columnIndex)
