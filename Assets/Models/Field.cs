@@ -240,16 +240,20 @@ public class Field
 
     private bool IsAvailableGoingUp(CellState playerColor, int rowIndex, int columnIndex)
     {
+        if (rowIndex < 2)
+            return false;
         rowIndex--;
 
+        bool isAtLeastOneEnemyCell = false;
 
-        while(rowIndex > 0 && Cells[rowIndex][columnIndex].State != CellState.Empty
+        while (rowIndex > 0 && Cells[rowIndex][columnIndex].State != CellState.Empty
             &&Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
         {
             rowIndex--;
+            isAtLeastOneEnemyCell = true;
         }
 
-        if (Cells[rowIndex][columnIndex].State == playerColor)
+        if (Cells[rowIndex][columnIndex].State == playerColor&&isAtLeastOneEnemyCell)
             return true;
 
         return false;
@@ -257,14 +261,20 @@ public class Field
 
     private bool IsAvailableGoingDown(CellState playerColor, int rowIndex, int columnIndex)
     {
+        if (rowIndex > Cells.Count - 2)
+            return false;
+
         rowIndex++;
+
+        bool isAtLeastOneEnemyCell = false;
         while (rowIndex < Cells.Count - 1 && Cells[rowIndex][columnIndex].State != CellState.Empty
             && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
         {
             rowIndex++;
+            isAtLeastOneEnemyCell = true;
         }
 
-        if (Cells[rowIndex][columnIndex].State == playerColor)
+        if (Cells[rowIndex][columnIndex].State == playerColor && isAtLeastOneEnemyCell)
             return true;
 
         return false;
@@ -272,14 +282,21 @@ public class Field
 
     private bool IsAvailableGoingLeft(CellState playerColor, int rowIndex, int columnIndex)
     {
+        if (columnIndex < 2)
+            return false;
+
         columnIndex--;
-        while(columnIndex>0 && Cells[rowIndex][columnIndex].State!=CellState.Empty 
+
+        bool isAtLeastOneEnemyCell = false;
+
+        while (columnIndex>0 && Cells[rowIndex][columnIndex].State != CellState.Empty
             && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
         {
             columnIndex--;
+            isAtLeastOneEnemyCell = true;
         }
 
-        if(Cells[rowIndex][columnIndex].State == playerColor)
+        if(Cells[rowIndex][columnIndex].State == playerColor&&isAtLeastOneEnemyCell)
             return true;
 
         return false;
@@ -287,14 +304,20 @@ public class Field
 
     private bool IsAvailableGoingRight(CellState playerColor, int rowIndex, int columnIndex)
     {
+        if (columnIndex > Cells.Count - 2)
+            return false;
+
+        bool isAtLeastOneEnemyCell = false;
+
         columnIndex++;
-        while (columnIndex > Cells.Count -1 && Cells[rowIndex][columnIndex].State != CellState.Empty
+        while (columnIndex < Cells.Count - 1 && Cells[rowIndex][columnIndex].State != CellState.Empty
             && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
         {
             columnIndex++;
+            isAtLeastOneEnemyCell = true;
         }
 
-        if (Cells[rowIndex][columnIndex].State == playerColor)
+        if (Cells[rowIndex][columnIndex].State == playerColor && isAtLeastOneEnemyCell)
             return true;
 
         return false;
@@ -302,17 +325,22 @@ public class Field
 
     private bool IsAvailableGoingUpAndLeft(CellState playerColor, int rowIndex, int columnIndex)
     {
+        if (rowIndex < 2 || columnIndex < 2)
+            return false;
         columnIndex--;
         rowIndex--;
+        bool isAtLeastOneEnemyCell = false;
+
         while (columnIndex > 0 && rowIndex > 0
             && Cells[rowIndex][columnIndex].State != CellState.Empty
             && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
         {
             columnIndex--;
             rowIndex--;
+            isAtLeastOneEnemyCell = true;
         }
 
-        if (Cells[rowIndex][columnIndex].State == playerColor)
+        if (Cells[rowIndex][columnIndex].State == playerColor&&isAtLeastOneEnemyCell)
             return true;
 
         return false;
@@ -320,17 +348,21 @@ public class Field
 
     private bool IsAvailableGoingUpAndRight(CellState playerColor, int rowIndex, int columnIndex)
     {
+        if (rowIndex < 2 || columnIndex>Cells.Count-2)
+            return false;
         columnIndex++;
         rowIndex--;
+        bool isAtLeastOneEnemyCell = false;
         while (columnIndex < Cells.Count - 1 && rowIndex > 0
             && Cells[rowIndex][columnIndex].State != CellState.Empty
             && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
         {
             columnIndex++;
             rowIndex--;
+            isAtLeastOneEnemyCell = true;
         }
 
-        if (Cells[rowIndex][columnIndex].State == playerColor)
+        if (Cells[rowIndex][columnIndex].State == playerColor&&isAtLeastOneEnemyCell)
             return true;
 
         return false;
@@ -338,17 +370,21 @@ public class Field
 
     private bool IsAvailableGoingDownAndRight(CellState playerColor, int rowIndex, int columnIndex)
     {
+        if (rowIndex > Cells.Count-2||columnIndex>Cells.Count-2)
+            return false;
         columnIndex++;
         rowIndex++;
+        bool isAtLeastOneEnemyCell = false;
         while (columnIndex < Cells.Count - 1 && rowIndex < Cells.Count - 1
             && Cells[rowIndex][columnIndex].State != CellState.Empty
             && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
         {
             columnIndex++;
             rowIndex++;
+            isAtLeastOneEnemyCell = true;
         }
 
-        if (Cells[rowIndex][columnIndex].State == playerColor)
+        if (Cells[rowIndex][columnIndex].State == playerColor&&isAtLeastOneEnemyCell)
             return true;
 
         return false;
@@ -356,17 +392,21 @@ public class Field
 
     private bool IsAvailableGoingDownAndLeft(CellState playerColor, int rowIndex, int columnIndex)
     {
+        if (rowIndex > Cells.Count-2||columnIndex < 2)
+            return false;
         columnIndex--;
         rowIndex++;
+        bool isAtLeastOneEnemyCell = false;
         while (columnIndex > 0 && rowIndex < Cells.Count - 1
             && Cells[rowIndex][columnIndex].State != CellState.Empty
             && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
         {
             columnIndex--;
             rowIndex++;
+            isAtLeastOneEnemyCell = true;
         }
 
-        if (Cells[rowIndex][columnIndex].State == playerColor)
+        if (Cells[rowIndex][columnIndex].State == playerColor&&isAtLeastOneEnemyCell)
             return true;
 
         return false;

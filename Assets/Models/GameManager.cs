@@ -58,7 +58,7 @@ namespace Assets.Models
 
             GameStarted?.Invoke(field.Cells);
 
-            //GetAvailableCells();
+            GetAvailableCells();
         }
 
         public void FinishGame()

@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class CellsDrawer : MonoBehaviour
 {
-    public bool isBlack = false;
-
     public Sprite CellSprite;
 
     public Sprite AvailableCellSprite;
@@ -39,7 +37,7 @@ public class CellsDrawer : MonoBehaviour
 
     public void DisplayAvailableCells(List<Tuple<int, int>> coords)
     {
-        if(availableCellColor == null)
+        if(availableCellColor == new Color(0, 0, 0, 0))
             ColorUtility.TryParseHtmlString("#FD46E4", out availableCellColor);
         foreach (var coord in coords)
         {
