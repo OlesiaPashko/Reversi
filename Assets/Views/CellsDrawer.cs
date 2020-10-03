@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CellsDrawer : MonoBehaviour
@@ -14,6 +15,10 @@ public class CellsDrawer : MonoBehaviour
 
     private List<List<GameObject>> matrix;
     public GameManager GameManager { get; set; }
+
+    public Text FirstPlayerScore;
+
+    public Text SecondPlayerScore;
 
     private Color emptyCellColor;
 
@@ -28,8 +33,10 @@ public class CellsDrawer : MonoBehaviour
         GameManager = gameManager;
         GameManager.GameStarted += GameStarted;
         GameManager.MoveMade += UpdateMatrix;
-        gameManager.AvailableCellsCalculated += DisplayAvailableCells;
-        //game.MatchDrawn += OnMatchDrawn;
+        GameManager.AvailableCellsCalculated += DisplayAvailableCells;
+        GameManager.ScoresCalculated += DisplayScore;
+        GameManager.GameRestarted += RestartGame;
+        GameManager.GameFinished += GameFinished;
     }
 
     public void GameStarted(List<List<Cell>> cells)
@@ -87,16 +94,24 @@ public class CellsDrawer : MonoBehaviour
         else
             matrixElement.GetComponent<SpriteRenderer>().material.color = emptyCellColor;
     }
-    public void ChangeColor()
+    public void DisplayScore(int firstPlayerScore, int secondPlayerScore)
     {
-        //if (isBlack)
-        //{
-            //cell.GetComponent<SpriteRenderer>().material.color = Color.white;
-        //}
-        //else
-        //{
-            //cell.GetComponent<SpriteRenderer>().material.color = Color.black;
-        //}
-        //isBlack = !isBlack;
+        FirstPlayerScore.text = firstPlayerScore.ToString();
+        SecondPlayerScore.text = secondPlayerScore.ToString();
+    }
+
+    public void GameFinished(int firstPlayerScore, int secondPlayerScore)
+    {
+        FinishSceneManager.FirstPlayerScore = firstPlayerScore;
+        FinishSceneManager.SecondPlayerScore = secondPlayerScore;
+        SceneManager.LoadScene("FinishScene");
+    }
+
+    private void RestartGame()
+    {
+        FirstPlayerScore.text = "2";
+        SecondPlayerScore.text = "2";
+        matrix = new List<List<GameObject>>();
+        SceneManager.LoadScene("StartScene");
     }
 }

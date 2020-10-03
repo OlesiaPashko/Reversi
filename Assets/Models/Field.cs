@@ -93,7 +93,7 @@ public class Field
     private void PaintGoingRight(CellState playerColor, int rowIndex, int columnIndex)
     {
         columnIndex++;
-        while (columnIndex > Cells.Count - 1 && Cells[rowIndex][columnIndex].State != CellState.Empty
+        while (columnIndex < Cells.Count - 1 && Cells[rowIndex][columnIndex].State != CellState.Empty
             && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
         {
             Cells[rowIndex][columnIndex].ChangeColor();
@@ -138,8 +138,8 @@ public class Field
             && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
         {
             Cells[rowIndex][columnIndex].ChangeColor();
-            columnIndex++;
-            rowIndex--;
+            columnIndex--;
+            rowIndex++;
         }
     }
 
@@ -168,7 +168,7 @@ public class Field
         }
     }
 
-    public CellState GetOppositeColor(CellState color)
+    public static CellState GetOppositeColor(CellState color)
     {
         if(color == CellState.Black)
         {

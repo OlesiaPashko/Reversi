@@ -39,8 +39,15 @@ public class StartSceneManager : MonoBehaviour
     }
     public void StartGame()
     {
-        CellsController.IsTwoPlayers = isTwoPlayers;
-        CellsController.firstPlayerColor = colorSelected;
+        CellsController.FirstPlayer = new HumanPlayer(colorSelected);
+        if (isTwoPlayers)
+        {
+            CellsController.SecondPlayer = new HumanPlayer(colorSelected);
+        }
+        else
+        {
+            CellsController.SecondPlayer = new AIPlayer(Field.GetOppositeColor(colorSelected));
+        }
         SceneManager.LoadScene("MainScene");
     }
 }
