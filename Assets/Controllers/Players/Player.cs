@@ -1,7 +1,7 @@
 ﻿using Assets.Models;
 using UnityEngine;
 
-public abstract class Player:MonoBehaviour
+public abstract class Player
 {
     public CellState Color { get; set; }
 
