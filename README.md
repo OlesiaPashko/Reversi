@@ -9,8 +9,11 @@ Architecture is implemented by 3 folders inside folder Assets and 3 .dll-s. Also
 You can play with friend using 1 computer or play with simple AI.
 
 There is 3 scenes:
-1. Start scene
+1. Start Scene<br/>
+![Start scene](https://github.com/OlesiaPashko/Reversi/blob/master/StartScene.png)
 
-2. Main scene
+2. Main Scene<br/>
+![Main scene](https://github.com/OlesiaPashko/Reversi/blob/master/MainScene.png)
 
-3. Finish Scene
+3. FinishScene<br/>
+![Finish Scene](https://github.com/OlesiaPashko/Reversi/blob/master/FinishScene.png)
