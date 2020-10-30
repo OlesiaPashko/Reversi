@@ -9,6 +9,7 @@ namespace Assets.Models
         private CellState secondPlayerColor;
         private CellState currentPlayerColor;
         Field field;
+        public int passedMovesCount = 0;
         public event Action<List<List<Cell>>> MoveMade;
 
         public event Action<List<List<Cell>>> GameStarted;
@@ -34,18 +35,28 @@ namespace Assets.Models
 
         public void MakeMove(Tuple<int, int> coolds)
         {
+            passedMovesCount = 0;
             field.SetCell(currentPlayerColor, coolds);
             MoveMade?.Invoke(field.Cells);
 
             SwitchPlayer();
-            if (field.isFull())
+            if (field.isFull()||passedMovesCount==2)
             {
                 FinishGame();
                 return;
             }
+        }
 
-            if (GetAvailableCells().Count == 0)
-                SwitchPlayer();
+        public void Pass()
+        {
+            if (GetAvailableCells().Count != 0)
+                return;
+
+            SwitchPlayer();
+            passedMovesCount += 1;
+
+            if (passedMovesCount == 2)
+                FinishGame();
         }
         public void RestartGame()
         {

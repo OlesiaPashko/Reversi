@@ -1,6 +1,7 @@
 ﻿using Assets.Models;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CellsController : MonoBehaviour
 {
@@ -8,10 +9,14 @@ public class CellsController : MonoBehaviour
 
     public static Player SecondPlayer;
 
+    private bool isFirstPlayerTurn = true;
+
     public GameObject FirstPlayerCellExample;
 
     public GameObject SecondPlayerCellExample;
     public GameManager GameManager { get; set; }
+
+    public Button PassButton;
 
     public void StartGame()
     {
@@ -36,15 +41,35 @@ public class CellsController : MonoBehaviour
         }
     }
 
-    
-
     void Update()
     {
-        if (FirstPlayer.MakeMove())
-        {
-            SecondPlayer.MakeMove();
-        }
+        GameLoop();
+        GameManager.CalculatePlayersScore();
+    }
 
+    public void GameLoop()
+    {
+        if (GameManager.GetAvailableCells().Count == 0 && ( isFirstPlayerTurn || ( !isFirstPlayerTurn && SecondPlayer is HumanPlayer)))
+        {
+            PassButton.gameObject.SetActive(true);
+        }
+        if (isFirstPlayerTurn)
+        {
+            if(FirstPlayer.MakeMove())
+                isFirstPlayerTurn = !isFirstPlayerTurn;
+        }
+        else
+        {
+            if(SecondPlayer.MakeMove())
+                isFirstPlayerTurn = !isFirstPlayerTurn;
+        }
+    }
+
+    public void Pass()
+    {
+        GameManager.Pass();
+        isFirstPlayerTurn = !isFirstPlayerTurn;
+        PassButton.gameObject.SetActive(false);
     }
 
     public void Restart()

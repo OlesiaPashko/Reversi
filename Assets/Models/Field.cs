@@ -6,6 +6,18 @@ public class Field
 {
     public List<List<Cell>> Cells { get; private set; }
 
+    private static List<Tuple<int, int>> directions = new List<Tuple<int, int>>()
+        {
+             new Tuple<int, int>(-1, -1),
+             new Tuple<int, int>(-1, 0),
+             new Tuple<int, int>(-1, 1),
+             new Tuple<int, int>(0, -1),
+             new Tuple<int, int>(0, 1),
+             new Tuple<int, int>(1, -1),
+             new Tuple<int, int>(1, 0),
+             new Tuple<int, int>(1, 1)
+        };
+
     public Field()
     {
         int size = 8;
@@ -29,6 +41,7 @@ public class Field
         Cells[4][3].State = CellState.Black;
     }
 
+    
     public void SetCell(CellState playerColor, Tuple<int, int> coords)
     {
         Cells[coords.Item1][coords.Item2].State = playerColor;
@@ -39,132 +52,23 @@ public class Field
     {
         int rowIndex = coords.Item1;
         int columnIndex = coords.Item2;
-        if(IsAvailableGoingUp(playerColor, rowIndex, columnIndex))
-            PaintGoingUp(playerColor, rowIndex, columnIndex);
-        if (IsAvailableGoingDown(playerColor, rowIndex, columnIndex))
-            PaintGoingDown(playerColor, rowIndex, columnIndex);
-        if(IsAvailableGoingLeft(playerColor, rowIndex, columnIndex))
-            PaintGoingLeft(playerColor, rowIndex, columnIndex);
-        if (IsAvailableGoingRight(playerColor, rowIndex, columnIndex))
-            PaintGoingRight(playerColor, rowIndex, columnIndex);
-        if (IsAvailableGoingUpAndLeft(playerColor, rowIndex, columnIndex))
-            PaintGoingUpAndLeft(playerColor, rowIndex, columnIndex);
-        if (IsAvailableGoingUpAndRight(playerColor, rowIndex, columnIndex))
-            PaintGoingUpAndRight(playerColor, rowIndex, columnIndex);
-        if (IsAvailableGoingDownAndLeft(playerColor, rowIndex, columnIndex))
-            PaintGoingDownAndLeft(playerColor, rowIndex, columnIndex);
-        if (IsAvailableGoingDownAndRight(playerColor, rowIndex, columnIndex))
-            PaintGoingDownAndRight(playerColor, rowIndex, columnIndex);
-    }
 
-    private void PaintGoingUp(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        rowIndex--;
-        while (rowIndex > 0 && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
+        foreach (var direction in directions)
         {
-            Cells[rowIndex][columnIndex].ChangeColor();
-            rowIndex--;
+            if (IsInLine(playerColor, rowIndex, columnIndex, direction.Item1, direction.Item2))
+                PaintInLine(playerColor, rowIndex, columnIndex, direction.Item1, direction.Item2);
         }
     }
 
-    private void PaintGoingDown(CellState playerColor, int rowIndex, int columnIndex)
+    private void PaintInLine(CellState playerColor, int rowIndex, int columnIndex, int rowDiff, int columnDiff)
     {
-        rowIndex++;
-        while (rowIndex < Cells.Count - 1 && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
+        rowIndex += rowDiff;
+        columnIndex += columnDiff;
+        while (IsCellInsideField(rowIndex, columnIndex) && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
         {
-            Cells[rowIndex][columnIndex].ChangeColor();
-            rowIndex++;
-        }
-    }
-
-    private void PaintGoingLeft(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        columnIndex--;
-        while (columnIndex > 0 && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
-        {
-            Cells[rowIndex][columnIndex].ChangeColor();
-            columnIndex--;
-        }
-    }
-
-    private void PaintGoingRight(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        columnIndex++;
-        while (columnIndex < Cells.Count - 1 && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
-        {
-            Cells[rowIndex][columnIndex].ChangeColor();
-            columnIndex++;
-        }
-    }
-
-    private void PaintGoingUpAndLeft(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        columnIndex--;
-        rowIndex--;
-        while (columnIndex > 0 && rowIndex > 0
-            && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
-        {
-            Cells[rowIndex][columnIndex].ChangeColor();
-            columnIndex--;
-            rowIndex--;
-        }
-    }
-
-    private void PaintGoingUpAndRight(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        columnIndex++;
-        rowIndex--;
-        while (columnIndex < Cells.Count - 1 && rowIndex > 0
-            && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
-        {
-            Cells[rowIndex][columnIndex].ChangeColor();
-            columnIndex++;
-            rowIndex--;
-        }
-    }
-
-    private void PaintGoingDownAndLeft(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        columnIndex--;
-        rowIndex++;
-        while (columnIndex > 0 && rowIndex < Cells.Count - 1
-            && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
-        {
-            Cells[rowIndex][columnIndex].ChangeColor();
-            columnIndex--;
-            rowIndex++;
-        }
-    }
-
-    private void PaintGoingDownAndRight(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        columnIndex++;
-        rowIndex++;
-        while (columnIndex < Cells.Count - 1 && rowIndex < Cells.Count - 1
-            && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
-        {
-            Cells[rowIndex][columnIndex].ChangeColor();
-            columnIndex++;
-            rowIndex++;
-        }
-    }
-
-    public void ChangeColorOfAllCells()
-    {
-        foreach(var cellsRow in Cells)
-        {
-            foreach(var cell in cellsRow)
-            {
-                cell.ChangeColor();
-            }
+            Cells[rowIndex][columnIndex].State = playerColor;
+            rowIndex += rowDiff;
+            columnIndex += columnDiff;
         }
     }
 
@@ -199,6 +103,16 @@ public class Field
         return availableCells;
     }
 
+    private bool IsCellAvailable(CellState playerColor, int rowIndex, int columnIndex)
+    {
+        foreach (var direction in directions)
+        {
+            if (IsInLine(playerColor, rowIndex, columnIndex, direction.Item1, direction.Item2))
+                return true;
+        }
+        return false;
+    }
+
     public int CountCells(CellState playerColor)
     {
         int count = 0;
@@ -226,189 +140,23 @@ public class Field
         return true;
     }
 
-    private bool IsCellAvailable(CellState playerColor, int rowIndex, int columnIndex)
+    private bool IsInLine(CellState playerColor, int rowIndex, int columnIndex, int rowDiff, int columnDiff)
     {
-        return IsAvailableGoingUp(playerColor, rowIndex, columnIndex) 
-            ||IsAvailableGoingDown(playerColor, rowIndex, columnIndex)
-            ||IsAvailableGoingLeft(playerColor, rowIndex, columnIndex)
-            || IsAvailableGoingRight(playerColor, rowIndex, columnIndex)
-            || IsAvailableGoingUpAndLeft(playerColor, rowIndex, columnIndex)
-            || IsAvailableGoingUpAndRight(playerColor, rowIndex, columnIndex)
-            || IsAvailableGoingDownAndLeft(playerColor, rowIndex, columnIndex)
-            || IsAvailableGoingDownAndRight(playerColor, rowIndex, columnIndex);
-    }
-
-    private bool IsAvailableGoingUp(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        if (rowIndex < 2)
-            return false;
-        rowIndex--;
-
-        bool isAtLeastOneEnemyCell = false;
-
-        while (rowIndex > 0 && Cells[rowIndex][columnIndex].State != CellState.Empty
-            &&Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
+        rowIndex += rowDiff;
+        columnIndex += columnDiff;
+        int cellsInLine = 0;
+        while (IsCellInsideField(rowIndex, columnIndex) && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
         {
-            rowIndex--;
-            isAtLeastOneEnemyCell = true;
+            cellsInLine += 1;
+            rowIndex += rowDiff;
+            columnIndex += columnDiff;
         }
 
-        if (Cells[rowIndex][columnIndex].State == playerColor&&isAtLeastOneEnemyCell)
-            return true;
-
-        return false;
+        return (IsCellInsideField(rowIndex, columnIndex) && Cells[rowIndex][columnIndex].State == playerColor && cellsInLine > 0);
     }
 
-    private bool IsAvailableGoingDown(CellState playerColor, int rowIndex, int columnIndex)
+    private bool IsCellInsideField(int rowIndex, int columnIndex)
     {
-        if (rowIndex > Cells.Count - 2)
-            return false;
-
-        rowIndex++;
-
-        bool isAtLeastOneEnemyCell = false;
-        while (rowIndex < Cells.Count - 1 && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
-        {
-            rowIndex++;
-            isAtLeastOneEnemyCell = true;
-        }
-
-        if (Cells[rowIndex][columnIndex].State == playerColor && isAtLeastOneEnemyCell)
-            return true;
-
-        return false;
-    }
-
-    private bool IsAvailableGoingLeft(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        if (columnIndex < 2)
-            return false;
-
-        columnIndex--;
-
-        bool isAtLeastOneEnemyCell = false;
-
-        while (columnIndex>0 && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
-        {
-            columnIndex--;
-            isAtLeastOneEnemyCell = true;
-        }
-
-        if(Cells[rowIndex][columnIndex].State == playerColor&&isAtLeastOneEnemyCell)
-            return true;
-
-        return false;
-    }
-
-    private bool IsAvailableGoingRight(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        if (columnIndex > Cells.Count - 2)
-            return false;
-
-        bool isAtLeastOneEnemyCell = false;
-
-        columnIndex++;
-        while (columnIndex < Cells.Count - 1 && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
-        {
-            columnIndex++;
-            isAtLeastOneEnemyCell = true;
-        }
-
-        if (Cells[rowIndex][columnIndex].State == playerColor && isAtLeastOneEnemyCell)
-            return true;
-
-        return false;
-    }
-
-    private bool IsAvailableGoingUpAndLeft(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        if (rowIndex < 2 || columnIndex < 2)
-            return false;
-        columnIndex--;
-        rowIndex--;
-        bool isAtLeastOneEnemyCell = false;
-
-        while (columnIndex > 0 && rowIndex > 0
-            && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
-        {
-            columnIndex--;
-            rowIndex--;
-            isAtLeastOneEnemyCell = true;
-        }
-
-        if (Cells[rowIndex][columnIndex].State == playerColor&&isAtLeastOneEnemyCell)
-            return true;
-
-        return false;
-    }
-
-    private bool IsAvailableGoingUpAndRight(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        if (rowIndex < 2 || columnIndex>Cells.Count-2)
-            return false;
-        columnIndex++;
-        rowIndex--;
-        bool isAtLeastOneEnemyCell = false;
-        while (columnIndex < Cells.Count - 1 && rowIndex > 0
-            && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
-        {
-            columnIndex++;
-            rowIndex--;
-            isAtLeastOneEnemyCell = true;
-        }
-
-        if (Cells[rowIndex][columnIndex].State == playerColor&&isAtLeastOneEnemyCell)
-            return true;
-
-        return false;
-    }
-
-    private bool IsAvailableGoingDownAndRight(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        if (rowIndex > Cells.Count-2||columnIndex>Cells.Count-2)
-            return false;
-        columnIndex++;
-        rowIndex++;
-        bool isAtLeastOneEnemyCell = false;
-        while (columnIndex < Cells.Count - 1 && rowIndex < Cells.Count - 1
-            && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
-        {
-            columnIndex++;
-            rowIndex++;
-            isAtLeastOneEnemyCell = true;
-        }
-
-        if (Cells[rowIndex][columnIndex].State == playerColor&&isAtLeastOneEnemyCell)
-            return true;
-
-        return false;
-    }
-
-    private bool IsAvailableGoingDownAndLeft(CellState playerColor, int rowIndex, int columnIndex)
-    {
-        if (rowIndex > Cells.Count-2||columnIndex < 2)
-            return false;
-        columnIndex--;
-        rowIndex++;
-        bool isAtLeastOneEnemyCell = false;
-        while (columnIndex > 0 && rowIndex < Cells.Count - 1
-            && Cells[rowIndex][columnIndex].State != CellState.Empty
-            && Cells[rowIndex][columnIndex].State == GetOppositeColor(playerColor))
-        {
-            columnIndex--;
-            rowIndex++;
-            isAtLeastOneEnemyCell = true;
-        }
-
-        if (Cells[rowIndex][columnIndex].State == playerColor&&isAtLeastOneEnemyCell)
-            return true;
-
-        return false;
+        return (rowIndex >= 0 && columnIndex >= 0 && rowIndex < Cells.Count && columnIndex < Cells.Count);
     }
 }

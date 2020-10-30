@@ -10,6 +10,11 @@ class HumanPlayer : Player
     public HumanPlayer(CellState color) : base(color) { }
     public override bool MakeMove()
     {
+        if(GameManager.GetAvailableCells().Count == 0) 
+        {
+            GameManager.Pass();
+            return true;
+        }
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -31,7 +36,6 @@ class HumanPlayer : Player
             if (cell.Item1 == y && cell.Item2 == x)
             {
                 GameManager.MakeMove(cell);
-                GameManager.CalculatePlayersScore();
                 return true;
             }
         }
