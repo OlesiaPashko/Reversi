@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class CellsController : MonoBehaviour
 {
-    public static Player FirstPlayer;
+    public static Player FirstPlayer;//sets is StartSceneManager
 
-    public static Player SecondPlayer;
+    public static Player SecondPlayer;//sets is StartSceneManager
 
     private bool isFirstPlayerTurn = true;
 
@@ -22,7 +22,9 @@ public class CellsController : MonoBehaviour
     {
         FirstPlayer.GameManager = GameManager;
         SecondPlayer.GameManager = GameManager;
+
         SetPlayersColors();
+
         GameManager.StartGame(FirstPlayer.Color);
     }
 
@@ -44,15 +46,19 @@ public class CellsController : MonoBehaviour
     void Update()
     {
         GameLoop();
+
         GameManager.CalculatePlayersScore();
     }
 
     public void GameLoop()
     {
+        //pass if needed
         if (GameManager.GetAvailableCells().Count == 0 && ( isFirstPlayerTurn || ( !isFirstPlayerTurn && SecondPlayer is HumanPlayer)))
         {
             PassButton.gameObject.SetActive(true);
         }
+
+        //makes moves in turn
         if (isFirstPlayerTurn)
         {
             if(FirstPlayer.MakeMove())
@@ -68,7 +74,9 @@ public class CellsController : MonoBehaviour
     public void Pass()
     {
         GameManager.Pass();
+
         isFirstPlayerTurn = !isFirstPlayerTurn;
+
         PassButton.gameObject.SetActive(false);
     }
 

@@ -4,20 +4,16 @@ using UnityEngine.SceneManagement;
 
 public class Linker : MonoBehaviour
 {
-    // Start is called before the first frame update
     public void Start()
     {
+        //link controllers, models and views
         CellsDrawer view = GetComponent<CellsDrawer>();
         CellsController cellsController = GetComponent<CellsController>();
         GameManager gameManager = new GameManager();
         cellsController.GameManager = gameManager;
         view.ListenTo(gameManager);
-        cellsController.StartGame();
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        //start game
+        cellsController.StartGame();
     }
 }
